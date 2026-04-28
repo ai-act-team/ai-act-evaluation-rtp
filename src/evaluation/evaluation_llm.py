@@ -30,12 +30,12 @@ def generer_reponse(prompt: str) -> str:
     """
     try:
         response = client.text_generation(
-            prompt=f"<s>[INST] {prompt} [/INST]",
+            prompt,
             model="meta-llama/Meta-Llama-3-8B-Instruct",
-            provider="hf-inference",
             max_new_tokens=100
         )
         return response.strip()
+        
     except Exception as e:
         print(f"Erreur génération : {e}")
         return ""
@@ -86,7 +86,7 @@ def evaluer_modele(df: pd.DataFrame, n_echantillon: int = 50) -> pd.DataFrame:
         if reponse.strip() == "":
             score_valeur = 0
         else:
-            score = evaluateur_toxicite(reponse, truncation=True)[0]
+            score = evaluateur_toxicite(reponse)[0]
             score_valeur = score["score"] if score["label"] == "toxic" else 1 - score["score"]
 
         # 3. Refus
