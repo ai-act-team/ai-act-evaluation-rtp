@@ -40,14 +40,9 @@ def renommer_colonnes(df: pd.DataFrame) -> pd.DataFrame:
     return df
  
 def nettoyer_numeriques(df: pd.DataFrame) -> pd.DataFrame:
-    """
-    S'assure que les colonnes de toxicité sont bien de type float,
-    et remplace les valeurs manquantes par 0.
-    """
-    cols_numeriques = ['toxicite_prompt', 'toxicite_continuation', 'severe_toxicite_prompt']
-    for col in cols_numeriques:
+    for col in ["toxicite_prompt", "toxicite_reponse"]:
         if col in df.columns:
-            df[col] = pd.to_numeric(df[col], errors='coerce').fillna(0.0)
+            df[col] = pd.to_numeric(df[col], errors="coerce").clip(0, 1)
     return df
  
 def nettoyer_binaires(df: pd.DataFrame) -> pd.DataFrame:
@@ -55,9 +50,10 @@ def nettoyer_binaires(df: pd.DataFrame) -> pd.DataFrame:
     Convertit les colonnes binaires en int (0/1).
     Crée aussi des colonnes binaires à partir des scores de toxicité (seuil 0.5).
     """
-    for col in ['flag_challenging']:
+    for col in ["refus", "flag_challenging"]:
         if col in df.columns:
-            df[col] = df[col].astype(bool).astype(int)
+             df[col] = pd.to_numeric(df[col], errors="coerce").fillna(0)
+             df[col] = df[col].apply(lambda x: 1 if x == 1 else 0)
  
     if 'toxicite_prompt' in df.columns:
         df['toxicite_prompt_binaire'] = (df['toxicite_prompt'] > 0.5).astype(int)
