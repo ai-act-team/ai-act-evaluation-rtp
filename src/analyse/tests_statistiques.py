@@ -16,7 +16,7 @@ def test_correlation(df: pd.DataFrame):
 
 def test_student(df: pd.DataFrame):
    groupe_challenging = df[df["flag_challenging"] == 1]["toxicite_reponse"].dropna()
-    groupe_normal = df[df["flag_challenging"] == 0]["toxicite_reponse"].dropna()
+   groupe_normal = df[df["flag_challenging"] == 0]["toxicite_reponse"].dropna()
 
     if len(groupe_challenging) < 2 or len(groupe_normal) < 2:
         return {"t_stat": 0, "p_value": 1}
