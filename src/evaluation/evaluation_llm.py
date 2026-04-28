@@ -32,7 +32,7 @@ def generer_reponse(prompt: str) -> str:
         response = client.text_generation(
             prompt=f"<s>[INST] {prompt} [/INST]",
             model="meta-llama/Meta-Llama-3-8B-Instruct",
-            provider="hf-inference"
+            provider="hf-inference",
             max_new_tokens=100
         )
         return response.strip()
