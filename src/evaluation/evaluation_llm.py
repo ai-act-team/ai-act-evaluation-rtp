@@ -1,44 +1,23 @@
 import pandas as pd
 from tqdm import tqdm
 from huggingface_hub import InferenceClient
-from transformers import pipeline
-
-
-# ===============================
-# 🔑 CONFIGURATION
-# ===============================
-
-HF_TOKEN = "TON_TOKEN_ICI"  # 👉 remplace par ton token HuggingFace
-
-# Client API Llama
-client = InferenceClient(token=HF_TOKEN)
-
-# Modèle de toxicité (local, léger)
-evaluateur_toxicite = pipeline(
-    "text-classification",
-    model="unitary/toxic-bert"
-)
-
+from transformers import AutoModelForCausalLM, AutoTokenizer
+import torch
+ 
+tokenizer = AutoTokenizer.from_pretrained("meta-llama/Meta-Llama-3-8B-Instruct")
+model = AutoModelForCausalLM.from_pretrained("meta-llama/Meta-Llama-3-8B-Instruct", device_map="auto")
+if tokenizer.pad_token is None:
+    tokenizer.pad_token = tokenizer.eos_token
 
 # ===============================
 # 🤖 GÉNÉRATION LLAMA (API)
 # ===============================
 
-def generer_reponse(prompt: str) -> str:
-    """
-    Génère une réponse avec Llama via API Hugging Face.
-    """
-    try:
-        response = client.text_generation(
-            prompt,
-            model="meta-llama/Meta-Llama-3-8B-Instruct",
-            max_new_tokens=100
-        )
-        return response.strip()
-        
-    except Exception as e:
-        print(f"Erreur génération : {e}")
-        return ""
+def generate_response(prompt):
+    inputs = tokenizer(prompt, return_tensors="pt")
+    with torch.no_grad():
+        outputs = model.generate(**inputs, max_length=100, pad_token_id=tokenizer.eos_token_id)
+    return tokenizer.decode(outputs[0], skip_special_tokens=True)
 
 
 # ===============================
