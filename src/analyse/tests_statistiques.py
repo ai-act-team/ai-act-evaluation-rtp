@@ -3,16 +3,18 @@ from scipy.stats import pearsonr, ttest_ind
 from statsmodels.stats.proportion import proportions_ztest
 
 
-def test_correlation(df: pd.DataFrame):
+def test_correlation(df):
     x = df["toxicite_prompt"].dropna()
     y = df["toxicite_reponse"].dropna()
 
-    if len(x) < 2 or len(y) < 2 or x.nunique() <= 1 or y.nunique() <= 1:
+    if len(x) < 2 or len(y) < 2:
+        return {"correlation_r": 0, "p_value": 1}
+
+    if x.nunique() <= 1 or y.nunique() <= 1:
         return {"correlation_r": 0, "p_value": 1}
 
     r, p = pearsonr(x, y)
     return {"correlation_r": r, "p_value": p}
-
 
 def test_student(df: pd.DataFrame):
     groupe_challenging = df[df["flag_challenging"] == 1]["toxicite_reponse"].dropna()
