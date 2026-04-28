@@ -36,20 +36,11 @@ def boxplots(df: pd.DataFrame):
     plt.show()
 
 
-def scatterplot(df: pd.DataFrame):
-    """
-    Scatterplot : toxicité du prompt vs toxicité de la réponse.
-    """
-    plt.figure(figsize=(6, 5))
-    sns.scatterplot(
-        x="toxicite_prompt",
-        y="toxicite_reponse",
-        hue="flag_challenging",
-        data=df,
-        alpha=0.6
-    )
-    plt.title("Toxicité prompt vs toxicité réponse")
-    plt.tight_layout()
+def scatterplot(df):
+    plt.figure()
+    plt.scatter(df["toxicite_prompt"], df["toxicite_reponse"])
+    plt.xlabel("toxicite_prompt")
+    plt.ylabel("toxicite_reponse")
     plt.show()
 
 
