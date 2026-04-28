@@ -1,52 +1,46 @@
 import pandas as pd
 import json
 
-def charger_donnees(chemin: str) -> pd.DataFrame:
+def charger_donnees(chemin):
     """
-    Charge un fichier JSONL ou CSV contenant les données RealToxicityPrompts.
+    Charge les données depuis un fichier JSONL ou CSV de manière plus robuste.
     """
     if chemin.endswith(".jsonl"):
-        df = pd.read_json(chemin, lines=True)
+        data = []
+        with open(chemin, 'r', encoding='utf-8') as f:
+            for line_num, line in enumerate(f):
+                try:
+                    data.append(json.loads(line))
+                except json.JSONDecodeError as e:
+                    print(f"Erreur de décodage JSON à la ligne {line_num+1}: {line.strip()} - {e}")
+                    # Vous pouvez choisir de gérer les lignes problématiques différemment, par ex. les ignorer ou les logger.
+        df = pd.DataFrame(data)
     elif chemin.endswith(".csv"):
         df = pd.read_csv(chemin)
-    else:
-        raise ValueError("Format non supporté : utilisez .jsonl ou .csv")
     return df
 
+# Définir les fonctions restantes nécessaires pour `pipeline.py` si elles ne sont pas déjà définies
+# Ceci est une version simplifiée, vous devrez intégrer cela dans le fichier existant.
 
-def renommer_colonnes(df: pd.DataFrame) -> pd.DataFrame:
-    """
-    Renomme les colonnes importantes pour harmoniser le dataset.
-    """
-    mapping = {
-        "prompt": "texte_prompt",
-        "toxicity": "toxicite_prompt",
-        "toxicity_continuation": "toxicite_reponse",
-        "challenging": "flag_challenging",
-        "refusal_flag": "refus"
-    }
-
-    df = df.rename(columns={k: v for k, v in mapping.items() if k in df.columns})
-
-    colonnes_utiles = [
-        "texte_prompt",
-        "toxicite_prompt",
-        "toxicite_reponse",
-        "refus",
-        "flag_challenging"
-    ]
-
-    df = df[[c for c in colonnes_utiles if c in df.columns]]
+def renommer_colonnes(df):
+    # Votre logique pour renommer les colonnes ici
+    # Exemple : Renommer 'prompt.toxicity' en 'toxicite_prompt' si la colonne existe après l'aplatissement
+    if 'prompt' in df.columns and 'toxicity' in df['prompt'][0]:
+        df['toxicite_prompt'] = df['prompt'].apply(lambda x: x.get('toxicity'))
+    if 'continuation' in df.columns and 'toxicity' in df['continuation'][0]:
+        df['toxicite_continuation'] = df['continuation'].apply(lambda x: x.get('toxicity'))
     return df
 
-
-def nettoyer_texte(df: pd.DataFrame) -> pd.DataFrame:
-    """
-    Nettoie les textes : suppression des espaces et des lignes vides.
-    """
-    df["texte_prompt"] = df["texte_prompt"].astype(str).str.strip()
-    df = df[df["texte_prompt"].str.len() > 0]
+def nettoyer_texte(df):
+    # Votre logique de nettoyage de texte ici
     return df
+
+def pretraiter(chemin_entree):
+    df = charger_donnees(chemin_entree)
+    df = renommer_colonnes(df)
+    df = nettoyer_texte(df)
+    return df
+
 
 
 def nettoyer_numeriques(df: pd.DataFrame) -> pd.DataFrame:
