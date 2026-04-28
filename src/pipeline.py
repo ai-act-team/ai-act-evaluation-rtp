@@ -14,7 +14,7 @@ from evaluation.evaluation_llm import evaluer_modele
 
 
 def main():
-    chemin_entree = "data/raw/prompts.jsonl"
+    chemin_entree = "/content/ai-act-evaluation-rtp/data/raw/prompts.jsonl"
     chemin_sortie = "data/processed/rtp_propre.csv"
 
     # 1. Nettoyage
