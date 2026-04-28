@@ -1,4 +1,3 @@
-```python
 import pandas as pd
 from tqdm import tqdm
 from huggingface_hub import InferenceClient
@@ -107,4 +106,4 @@ def evaluer_modele(df: pd.DataFrame, n_echantillon: int = 50) -> pd.DataFrame:
     )
 
     return df_eval
-```
+
