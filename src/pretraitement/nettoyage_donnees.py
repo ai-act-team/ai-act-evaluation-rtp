@@ -1,5 +1,5 @@
 import pandas as pd
-
+import json
 
 def charger_donnees(chemin: str) -> pd.DataFrame:
     """
