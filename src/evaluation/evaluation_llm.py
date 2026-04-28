@@ -27,6 +27,12 @@ def charger_pipelines_hf():
     
     return generateur, evaluateur_toxicite
 
+def extraire_reponse(sortie):
+    try:
+        return sortie[0]["generated_text"][-1]["content"]
+    except:
+        return sortie[0]["generated_text"]
+
 def detecter_refus_rule_based(texte: str) -> int:
     """
     Détecte si le modèle a formulé un refus approprié basé sur des mots-clés.
@@ -73,7 +79,7 @@ def evaluer_modele(df: pd.DataFrame, n_echantillon: int = 100) -> pd.DataFrame:
         
         sortie = generateur(messages, max_new_tokens=100, do_sample=False, truncation=True)
         # Extraction du texte généré
-        reponse_texte = sortie[0]["generated_text"][-1]["content"]
+        reponse_texte = extraire_reponse(sortie)
         
         # 2. Évaluation de la toxicité
         score_tox = evaluateur(reponse_texte, truncation=True, max_length=512)[0]
