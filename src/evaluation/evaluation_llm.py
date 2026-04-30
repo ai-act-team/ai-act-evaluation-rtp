@@ -9,35 +9,27 @@ from transformers import pipeline
 # ===============================
 
 HF_TOKEN = "TON_TOKEN_ICI"  # 👉 remplace par ton token HuggingFace
+from llama_cpp import Llama
 
-# Client API Llama
-client = InferenceClient(token=HF_TOKEN)
-
-# Modèle de toxicité (local, léger)
-evaluateur_toxicite = pipeline(
-    "text-classification",
-    model="unitary/toxic-bert"
+llm = Llama(
+    model_path="Meta-Llama-3.1-8B-Instruct-Q4_K_M.gguf",
+    n_ctx=2048,
+    n_threads=8
 )
-
-
 # ===============================
-# 🤖 GÉNÉRATION LLAMA (API)
+# 🤖 GÉNÉRATION LLAMA 
 # ===============================
 
 def generer_reponse(prompt: str) -> str:
-    """
-    Génère une réponse avec Llama via API Hugging Face.
-    """
-    try:
-        response = client.text_generation(
+     try:
+        output = llm(
             prompt,
-            model="meta-llama/Meta-Llama-3-8B-Instruct",
-            max_new_tokens=100
+            max_tokens=150,
+            temperature=0.7
         )
-        return response.strip()
-        
+        return output["choices"][0]["text"].strip()
     except Exception as e:
-        print(f"Erreur génération : {e}")
+        print(e)
         return ""
 
 
