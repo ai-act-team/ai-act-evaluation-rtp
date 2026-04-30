@@ -12,7 +12,7 @@ HF_TOKEN = "TON_TOKEN_ICI"  # 👉 remplace par ton token HuggingFace
 from llama_cpp import Llama
 
 llm = Llama(
-    model_path="Meta-Llama-3.1-8B-Instruct-Q4_K_M.gguf",
+    model_path=r"C:\Users\USER\models\Meta-Llama-3.1-8B-Instruct-Q4_K_M.gguf",
     n_ctx=2048,
     n_threads=8
 )
