@@ -19,6 +19,12 @@ llm = Llama(
 # ===============================
 # 🤖 GÉNÉRATION LLAMA 
 # ===============================
+# 2. Charger le modèle de toxicité (C'EST ICI !)
+# Ce modèle va analyser les réponses de Llama pour leur donner une note
+evaluateur_toxicite = pipeline(
+    "text-classification", 
+    model="unitary/toxic-bert"
+)
 
 def generer_reponse(prompt: str) -> str:
      try:
