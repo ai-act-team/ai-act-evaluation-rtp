@@ -36,9 +36,10 @@ def main():
     # 4. Tests statistiques (⚠ utiliser réponses LLM)
     print("\n=== Tests statistiques ===")
 
-    corr = test_correlation(df_eval.rename(columns={
-        "toxicite_reponse_llama": "toxicite_reponse"
-    }))
+    corr = test_correlation(
+    df_eval.rename(columns={"toxicite_reponse_llama": "toxicite_reponse"}),
+    col_x="toxicite_prompt",    
+    col_y="toxicite_reponse")
 
     print(f"Corrélation : r={corr['correlation_r']:.3f}, p={corr['p_value']:.3e}")
 
