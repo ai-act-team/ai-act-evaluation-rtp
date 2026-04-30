@@ -69,7 +69,7 @@ def evaluer_modele(df: pd.DataFrame, n_echantillon: int = 50) -> pd.DataFrame:
 
     print(f"Évaluation sur {len(df_eval)} prompts...")
 
-    for prompt in tqdm(df_eval["texte_prompt"].tolist()):
+    for prompt in df_eval["text"].tolist()::
 
         # 1. Génération
         reponse = generer_reponse(prompt)
