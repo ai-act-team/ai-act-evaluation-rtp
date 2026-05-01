@@ -6,41 +6,42 @@ import seaborn as sns
 sns.set(style="whitegrid", palette="muted")
 
 
-def histogrammes(df: pd.DataFrame):
-    """
-    Affiche les histogrammes des toxicités et de delta_t.
-    """
-    colonnes = ["toxicite_prompt", "toxicite_reponse", "delta_t"]
+def histogrammes(df: pd.DataFrame, colonnes=None):
+    if colonnes is None:
+        colonnes = ["toxicite_prompt", "toxicite_reponse", "delta_t"]
 
     for col in colonnes:
-        plt.figure(figsize=(6, 4))
-        plt.hist(df[col], bins=30, color="steelblue", edgecolor="black")
-        plt.title(f"Distribution de {col}")
-        plt.xlabel(col)
-        plt.ylabel("Fréquence")
-        plt.tight_layout()
-        plt.show()
+        if col in df.columns: # Sécurité : vérifie si la colonne existe
+            plt.figure(figsize=(6, 4))
+            plt.hist(df[col], bins=30, color="steelblue", edgecolor="black")
+            plt.title(f"Distribution de {col}")
+            plt.xlabel(col)
+            plt.ylabel("Fréquence")
+            plt.tight_layout()
+            plt.show()
 
 
-def boxplots(df: pd.DataFrame):
-    """
-    Compare les distributions de toxicité via boxplots.
-    """
+def boxplots(df: pd.DataFrame, colonnes=None):
+    if colonnes is None:
+        colonnes = ["toxicite_prompt", "toxicite_reponse"]
+    
     plt.figure(figsize=(7, 5))
-    df_melt = df[["toxicite_prompt", "toxicite_reponse"]].melt(
-        var_name="type", value_name="toxicite"
-    )
+    # On filtre seulement sur les colonnes demandées présentes dans le df
+    cols_presentes = [c for c in colonnes if c in df.columns]
+    df_melt = df[cols_presentes].melt(var_name="type", value_name="toxicite")
+    
     sns.boxplot(x="type", y="toxicite", data=df_melt)
-    plt.title("Comparaison des toxicités (prompt vs réponse)")
+    plt.title("Comparaison des toxicités")
     plt.tight_layout()
     plt.show()
 
 
-def scatterplot(df):
+def scatterplot(df, x, y):
     plt.figure()
-    plt.scatter(df["toxicite_prompt"], df["toxicite_reponse"])
-    plt.xlabel("toxicite_prompt")
-    plt.ylabel("toxicite_reponse")
+    plt.scatter(df[x], df[y])
+    plt.xlabel(x)
+    plt.ylabel(y)
+    plt.title(f"Relation entre {x} et {y}")
     plt.show()
 
 
