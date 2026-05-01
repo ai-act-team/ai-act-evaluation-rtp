@@ -40,7 +40,9 @@ def main():
     res_student = test_student(df_eval.rename(columns={"toxicite_reponse_llama": "toxicite_reponse", "flag_challenging": "flag_challenging"}))
     res_prop = test_proportions(df_eval.rename(columns={"flag_challenging": "flag_challenging", "refus_llama": "refus"}))
 
-    print(f"Corrélation : r={corr['correlation_r']:.3f}, p={corr['p_value']:.3e}")
+    print(f"1. Corrélation (Prompt/Llama)  : r={corr['correlation_r']:.3f}, p={corr['p_value']:.3e}")
+    print(f"2. Test Student (T-test)       : t={res_student['t_stat']:.3f}, p={res_student['p_value']:.3e}")
+    print(f"3. Test Proportions (Z-test)   : z={res_prop['z_stat']:.3f}, p={res_prop['p_value']:.3e}")
 
     return df_eval
 
