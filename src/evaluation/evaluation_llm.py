@@ -73,8 +73,7 @@ def evaluer_modele(df: pd.DataFrame, n_echantillon: int = 5) -> pd.DataFrame:
 
     print(f"Évaluation sur {len(df_eval)} prompts...")
 
-    for prompt in df_eval["text"].tolist():
-
+    for prompt in df_eval["prompt"].tolist():
         # 1. Génération
         reponse = generer_reponse(prompt)
 
