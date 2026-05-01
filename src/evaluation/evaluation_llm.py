@@ -27,7 +27,7 @@ evaluateur_toxicite = pipeline(
 )
 
 def generer_reponse(prompt: str) -> str:
-     try:
+    try:
         output = llm(
             prompt,
             max_tokens=150,
