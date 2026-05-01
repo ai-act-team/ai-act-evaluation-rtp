@@ -15,7 +15,7 @@ from evaluation.evaluation_llm import evaluer_modele
 
 def main():
     chemin_entree = r"C:\Users\USER\ai-act-evaluation-rtp\data\raw\prompts.jsonl"
-    chemin_sortie = r"C:\Users\USER\ai-act-evaluation-rtp\dataprocessed/rtp_propre.csv"
+    chemin_sortie = r"C:\Users\USER\ai-act-evaluation-rtp\data\processed\rtp_propre.csv"
 
     # 1. Nettoyage
     df = pretraiter(chemin_entree)
