@@ -1,6 +1,4 @@
 import pandas as pd
-from tqdm import tqdm
-from huggingface_hub import InferenceClient
 from transformers import pipeline
 
 
