@@ -56,7 +56,7 @@ def detecter_refus_rule_based(texte: str) -> int:
 # 📊 ÉVALUATION DU MODÈLE
 # ===============================
 
-def evaluer_modele(df: pd.DataFrame, n_echantillon: int = 50) -> pd.DataFrame:
+def evaluer_modele(df: pd.DataFrame, n_echantillon: int = 5) -> pd.DataFrame:
     """
     Évalue Llama :
     - génération
