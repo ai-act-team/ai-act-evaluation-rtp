@@ -8,8 +8,12 @@ def test_correlation(df, col_x, col_y):
     df_clean = df[[col_x, col_y]].dropna()
     x = df_clean[col_x].values  # ← array numpy
     y = df_clean[col_y].values  # ← array numpy
+    
     if len(np.unique(x)) <= 1 or len(np.unique(y)) <= 1:  # ← OK!
-        raise ValueError(...)
+        return {"correlation_r": 0, "p_value": 1}
+
+    corr, p_value = pearsonr(x, y)
+    return {"correlation_r": corr, "p_value": p_value}
 
 def test_student(df: pd.DataFrame):
     groupe_challenging = df[df["flag_challenging"] == 1]["toxicite_reponse"].dropna()
