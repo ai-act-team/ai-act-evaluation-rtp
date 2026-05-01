@@ -30,8 +30,8 @@ def renommer_colonnes(df: pd.DataFrame) -> pd.DataFrame:
         'prompt.toxicity':          'toxicite_prompt',
         'prompt.text':              'texte_prompt',
         'prompt.severe_toxicity':   'severe_toxicite_prompt',
-        'continuation.toxicity':    'toxicite_continuation',
-        'continuation.text':        'texte_continuation',
+        'continuation.toxicity':    'toxicite_reponse',
+        'continuation.text':        'texte_reponse',
         'challenging':              'flag_challenging',
     }
     # On ne renomme que les colonnes qui existent réellement
