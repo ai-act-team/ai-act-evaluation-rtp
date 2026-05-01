@@ -1,4 +1,5 @@
 import pandas as pd
+import numpy as np
 from scipy.stats import pearsonr, ttest_ind
 from statsmodels.stats.proportion import proportions_ztest
 
