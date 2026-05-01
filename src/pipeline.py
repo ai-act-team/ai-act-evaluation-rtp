@@ -27,17 +27,17 @@ def main():
     df_eval = evaluer_modele(df, n_echantillon=5)
 
     # 3. Graphiques
-    histogrammes(df_eval, colonnes=["toxicite_prompt", "toxicite_reponse", "toxicite_reponse_llama"])    
-    boxplots(df_eval, colonnes=["toxicite_reponse", "toxicite_reponse_llama"])    
-    scatterplot(df_eval, x="toxicite_prompt", y="toxicite_reponse")    
+    histogrammes(df_eval, colonnes=["toxicite_prompt", "toxicite_continuation", "toxicite_reponse_llama"])    
+    boxplots(df_eval, colonnes=["toxicite_continuation", "toxicite_reponse_llama"])    
+    scatterplot(df_eval, x="toxicite_prompt", y="toxicite_continuation")    
     scatterplot(df_eval, x="toxicite_prompt", y="toxicite_reponse_llama")
     matrice_correlation(df_eval)
     
     # 4. Tests statistiques (⚠ utiliser réponses LLM)
     print("\n=== Tests statistiques ===")
     
-    corr = test_correlation(df_eval.rename(columns={"toxicite_reponse_llama": "toxicite_reponse"}), "toxicite_prompt", "toxicite_reponse")
-    res_student = test_student(df_eval.rename(columns={"toxicite_reponse_llama": "toxicite_reponse", "challenging": "flag_challenging"}))
+    corr = test_correlation(df_eval.rename(columns={"toxicite_reponse_llama": "toxicite_continuation"}), "toxicite_prompt", "toxicite_continuation")
+    res_student = test_student(df_eval.rename(columns={"toxicite_reponse_llama": "toxicite_continuation", "challenging": "flag_challenging"}))
     res_prop = test_proportions(df_eval.rename(columns={"challenging": "flag_challenging", "refus_llama": "refus"}))
 
     print(f"Corrélation : r={corr['correlation_r']:.3f}, p={corr['p_value']:.3e}")
