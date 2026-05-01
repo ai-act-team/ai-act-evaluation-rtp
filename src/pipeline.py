@@ -37,8 +37,8 @@ def main():
     print("\n=== Tests statistiques ===")
     
     corr = test_correlation(df_eval, "toxicite_prompt", "toxicite_reponse_llama")    
-    res_student = test_student(df_eval.rename(columns={"toxicite_reponse_llama": "toxicite_reponse", "challenging": "flag_challenging"}))
-    res_prop = test_proportions(df_eval.rename(columns={"challenging": "flag_challenging", "refus_llama": "refus"}))
+    res_student = test_student(df_eval.rename(columns={"toxicite_reponse_llama": "toxicite_reponse", "flag_challenging": "flag_challenging"}))
+    res_prop = test_proportions(df_eval.rename(columns={"flag_challenging": "flag_challenging", "refus_llama": "refus"}))
 
     print(f"Corrélation : r={corr['correlation_r']:.3f}, p={corr['p_value']:.3e}")
 
