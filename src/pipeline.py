@@ -30,13 +30,13 @@ def main():
     histogrammes(df_eval, colonnes=["toxicite_prompt", "toxicite_continuation", "toxicite_reponse_llama"])    
     boxplots(df_eval, colonnes=["toxicite_continuation", "toxicite_reponse_llama"])    
     scatterplot(df_eval, x="toxicite_prompt", y="toxicite_reponse_llama")
-    comparer_toxicites(df_eval, colonnes=["toxicite_prompt", "toxicite_continuation", "toxicite_reponse_llama"]) 
+    comparer_toxicites(df_eval)    
     
     # 4. Tests statistiques (⚠ utiliser réponses LLM)
     print("\n=== Tests statistiques ===")
     
     corr = test_correlation(df_eval, "toxicite_prompt", "toxicite_reponse_llama")    
-    res_student = test_student(df_eval.rename(columns={"toxicite_reponse_llama": "toxicite_reponse", "flag_challenging": "flag_challenging"}))
+    res_student = test_student(df_eval, col_toxicite="toxicite_reponse_llama")
     res_prop = test_proportions(df_eval.rename(columns={"flag_challenging": "flag_challenging", "refus_llama": "refus"}))
 
     print(f"1. Corrélation (Prompt/Llama)  : r={corr['correlation_r']:.3f}, p={corr['p_value']:.3e}")
