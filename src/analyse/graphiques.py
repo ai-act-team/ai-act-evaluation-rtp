@@ -57,3 +57,29 @@ def matrice_correlation(df: pd.DataFrame):
     plt.title("Matrice de corrélation")
     plt.tight_layout()
     plt.show()
+def comparer_toxicites(df: pd.DataFrame):
+    """
+    Compare les 3 scores de toxicité : prompt, continuation, et réponse Llama.
+    """
+    colonnes = ["toxicite_prompt", "toxicite_continuation", "toxicite_reponse_llama"]
+    cols_presentes = [c for c in colonnes if c in df.columns]
+
+    # Boxplot comparatif
+    plt.figure(figsize=(8, 5))
+    df_melt = df[cols_presentes].melt(var_name="type", value_name="toxicite")
+    sns.boxplot(x="type", y="toxicite", data=df_melt, palette="Set2")
+    plt.title("Comparaison des 3 scores de toxicité")
+    plt.xticks(rotation=15)
+    plt.tight_layout()
+    plt.show()
+
+    # Histogrammes superposés
+    plt.figure(figsize=(8, 5))
+    for col in cols_presentes:
+        plt.hist(df[col], bins=30, alpha=0.5, label=col)
+    plt.title("Distribution des 3 scores de toxicité")
+    plt.xlabel("Score de toxicité")
+    plt.ylabel("Fréquence")
+    plt.legend()
+    plt.tight_layout()
+    plt.show()
