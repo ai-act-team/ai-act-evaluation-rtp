@@ -29,9 +29,8 @@ def main():
     # 3. Graphiques
     histogrammes(df_eval, colonnes=["toxicite_prompt", "toxicite_continuation", "toxicite_reponse_llama"])    
     boxplots(df_eval, colonnes=["toxicite_continuation", "toxicite_reponse_llama"])    
-    scatterplot(df_eval, x="toxicite_prompt", y="toxicite_continuation")    
     scatterplot(df_eval, x="toxicite_prompt", y="toxicite_reponse_llama")
-    matrice_correlation(df_eval)
+    comparer_toxicites(df_eval, colonnes=["toxicite_prompt", "toxicite_continuation", "toxicite_reponse_llama"]) 
     
     # 4. Tests statistiques (⚠ utiliser réponses LLM)
     print("\n=== Tests statistiques ===")
