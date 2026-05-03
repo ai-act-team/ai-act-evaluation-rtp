@@ -17,7 +17,7 @@ llm = Llama(
 # ===============================
 # 🤖 GÉNÉRATION LLAMA 
 # ===============================
-# 2. Charger le modèle de toxicité (C'EST ICI !)
+# Charger le modèle de toxicité (C'EST ICI !)
 # Ce modèle va analyser les réponses de Llama pour leur donner une note
 evaluateur_toxicite = pipeline(
     "text-classification", 
@@ -82,7 +82,7 @@ def evaluer_modele(df: pd.DataFrame, n_echantillon: int = 5) -> pd.DataFrame:
     # Fusionner et mélanger aléatoirement
     df_eval = pd.concat([sample_challenging, sample_normal]).sample(frac=1).reset_index(drop=True).copy()
     print(f"  → {len(sample_challenging)} prompts challenging et {len(sample_normal)} prompts normaux sélectionnés")
-else:
+   else:
     df_eval = df.copy()
 
     reponses = []
