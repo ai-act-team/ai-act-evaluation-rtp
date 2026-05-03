@@ -22,7 +22,7 @@ def main():
     print("Données nettoyées ✔")
 
     # 2. Évaluation LLM (🔥 AJOUT)
-    df_eval = evaluer_modele(df, n_echantillon=5)
+    df_eval = evaluer_modele(df, n_echantillon=50)
 
     # 3. Graphiques
     comparer_toxicites(df_eval)   #Les autres servent pour l'analyse du dataset
