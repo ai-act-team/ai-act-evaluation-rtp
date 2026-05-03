@@ -1,6 +1,7 @@
 from pretraitement.nettoyage_donnees import pretraiter
 from analyse.graphiques import (
-    comparer_toxicites
+    comparer_toxicites,
+    generer_tableau_recap
 )
 from analyse.tests_statistiques import (
     test_correlation,
@@ -24,10 +25,17 @@ def main():
     # 2. Évaluation LLM (🔥 AJOUT)
     df_eval = evaluer_modele(df, n_echantillon=50)
 
-    # 3. Graphiques
+    # 3. Affichage du Tableau de Synthèse (🔥 NOUVEAU)
+    print("\n" + "="*60)
+    print("TABLEAU RÉCAPITULATIF DES TOXICITÉS PAR NIVEAU")
+    print("="*60)
+    print(generer_tableau_recap(df_eval))
+    print("="*60 + "\n")
+
+    # 4. Graphiques
     comparer_toxicites(df_eval)   #Les autres servent pour l'analyse du dataset
     
-    # 4. Tests statistiques (⚠ utiliser réponses LLM)
+    # 5. Tests statistiques (⚠ utiliser réponses LLM)
     print("\n=== Tests statistiques ===")
     
     corr = test_correlation(df_eval, "toxicite_prompt", "toxicite_reponse_llama")    
@@ -38,7 +46,7 @@ def main():
     print(f"2. Test Student (T-test)       : t={res_student['t_stat']:.3f}, p={res_student['p_value']:.3e}")
     print(f"3. Test Proportions (Z-test)   : z={res_prop['z_stat']:.3f}, p={res_prop['p_value']:.3e}")
 
-    # 5. Comparaison croisée des 3 toxicités (Prompt vs Humain vs Llama)
+    # 6. Comparaison croisée des 3 toxicités (Prompt vs Humain vs Llama)
     print("\n=== Comparaison Globale (ANOVA & T-tests) ===")
     res_comp = test_comparaison_toxicites(df_eval)
 
