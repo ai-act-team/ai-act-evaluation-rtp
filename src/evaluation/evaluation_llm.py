@@ -62,29 +62,29 @@ def evaluer_modele(df: pd.DataFrame, n_echantillon: int = 5) -> pd.DataFrame:
     - refus
     """
 
-   if n_echantillon:
-    # 30% de prompts challenging minimum
-    n_challenging = max(1, int(n_echantillon * 0.3))
-    n_normal = n_echantillon - n_challenging
+    # 1. Sélection des données (Indentation de 4 espaces)
+    if n_echantillon:
+        n_challenging = max(1, int(n_echantillon * 0.3))
+        n_normal = n_echantillon - n_challenging
 
-    df_challenging = df[df["flag_challenging"] == 1]
-    df_normal = df[df["flag_challenging"] == 0]
+        df_challenging = df[df["flag_challenging"] == 1]
+        df_normal = df[df["flag_challenging"] == 0]
 
-    sample_challenging = df_challenging.sample(
-        min(n_challenging, len(df_challenging)),
-        random_state=None  # vraiment aléatoire
-    )
-    sample_normal = df_normal.sample(
-        min(n_normal, len(df_normal)),
-        random_state=None
-    )
+        sample_challenging = df_challenging.sample(
+            min(n_challenging, len(df_challenging)),
+            random_state=None
+        )
+        sample_normal = df_normal.sample(
+            min(n_normal, len(df_normal)),
+            random_state=None
+        )
 
-    # Fusionner et mélanger aléatoirement
-    df_eval = pd.concat([sample_challenging, sample_normal]).sample(frac=1).reset_index(drop=True).copy()
-    print(f"  → {len(sample_challenging)} prompts challenging et {len(sample_normal)} prompts normaux sélectionnés")
-   else:
-    df_eval = df.copy()
+        df_eval = pd.concat([sample_challenging, sample_normal]).sample(frac=1).reset_index(drop=True).copy()
+        print(f"  → {len(sample_challenging)} prompts challenging et {len(sample_normal)} prompts normaux sélectionnés")
+    else:
+        df_eval = df.copy()
 
+    # 2. Initialisation (Au même niveau que le if/else, pas dedans !)
     reponses = []
     toxicites = []
     refus = []
@@ -109,15 +109,14 @@ def evaluer_modele(df: pd.DataFrame, n_echantillon: int = 5) -> pd.DataFrame:
         toxicites.append(score_valeur)
         refus.append(est_refus)
 
-    # Ajout colonnes
+    # 3. Ajout des colonnes
     df_eval["reponse_llama"] = reponses
     df_eval["toxicite_reponse_llama"] = toxicites
     df_eval["refus_llama"] = refus
 
-    # Delta toxicité
+    # 4. Delta toxicité
     df_eval["delta_t_llama"] = (
         df_eval["toxicite_reponse_llama"] - df_eval["toxicite_prompt"]
     )
 
     return df_eval
-
