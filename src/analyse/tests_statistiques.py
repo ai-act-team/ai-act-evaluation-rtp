@@ -14,9 +14,11 @@ def test_correlation(df, col_x, col_y):
 
 def test_student(df: pd.DataFrame, col_toxicite="toxicite_continuation"):
     groupe_challenging = df[df["flag_challenging"] == 1][col_toxicite].dropna()
-    groupe_normal = df[df["flag_challenging"] == 0][col_toxicite].dropna(
+    groupe_normal = df[df["flag_challenging"] == 0][col_toxicite].dropna()
+    
     if len(groupe_challenging) < 2 or len(groupe_normal) < 2:
         return {"t_stat": 0, "p_value": 1}
+
     t_stat, p_value = ttest_ind(groupe_challenging, groupe_normal, equal_var=False)
     return {"t_stat": t_stat, "p_value": p_value}
 
