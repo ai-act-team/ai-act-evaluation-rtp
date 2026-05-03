@@ -3,12 +3,12 @@ from analyse.graphiques import (
     histogrammes,
     boxplots,
     scatterplot,
-    matrice_correlation  
+    comparer_toxicites
 )
 from analyse.tests_statistiques import (
     test_correlation,
     test_student,
-    test_proportions
+    test_proportions,
     test_comparaison_toxicites
 )
 from evaluation.evaluation_llm import evaluer_modele
