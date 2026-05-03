@@ -1,8 +1,5 @@
 from pretraitement.nettoyage_donnees import pretraiter
 from analyse.graphiques import (
-    histogrammes,
-    boxplots,
-    scatterplot,
     comparer_toxicites
 )
 from analyse.tests_statistiques import (
@@ -28,10 +25,7 @@ def main():
     df_eval = evaluer_modele(df, n_echantillon=5)
 
     # 3. Graphiques
-    histogrammes(df_eval, colonnes=["toxicite_prompt", "toxicite_continuation", "toxicite_reponse_llama"])    
-    boxplots(df_eval, colonnes=["toxicite_continuation", "toxicite_reponse_llama"])    
-    scatterplot(df_eval, x="toxicite_prompt", y="toxicite_reponse_llama")
-    comparer_toxicites(df_eval)    
+    comparer_toxicites(df_eval)   #Les autres servent pour l'analyse du dataset
     
     # 4. Tests statistiques (⚠ utiliser réponses LLM)
     print("\n=== Tests statistiques ===")
