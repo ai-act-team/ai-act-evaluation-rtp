@@ -62,10 +62,28 @@ def evaluer_modele(df: pd.DataFrame, n_echantillon: int = 5) -> pd.DataFrame:
     - refus
     """
 
-    if n_echantillon:
-        df_eval = df.sample(n_echantillon, random_state=42).copy()
-    else:
-        df_eval = df.copy()
+   if n_echantillon:
+    # 30% de prompts challenging minimum
+    n_challenging = max(1, int(n_echantillon * 0.3))
+    n_normal = n_echantillon - n_challenging
+
+    df_challenging = df[df["flag_challenging"] == 1]
+    df_normal = df[df["flag_challenging"] == 0]
+
+    sample_challenging = df_challenging.sample(
+        min(n_challenging, len(df_challenging)),
+        random_state=None  # vraiment aléatoire
+    )
+    sample_normal = df_normal.sample(
+        min(n_normal, len(df_normal)),
+        random_state=None
+    )
+
+    # Fusionner et mélanger aléatoirement
+    df_eval = pd.concat([sample_challenging, sample_normal]).sample(frac=1).reset_index(drop=True).copy()
+    print(f"  → {len(sample_challenging)} prompts challenging et {len(sample_normal)} prompts normaux sélectionnés")
+else:
+    df_eval = df.copy()
 
     reponses = []
     toxicites = []
