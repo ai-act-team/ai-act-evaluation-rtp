@@ -57,6 +57,7 @@ def matrice_correlation(df: pd.DataFrame):
     plt.title("Matrice de corrélation")
     plt.tight_layout()
     plt.show()
+    
 def comparer_toxicites(df: pd.DataFrame):
     """
     Compare les 3 scores de toxicité : prompt, continuation, et réponse Llama.
@@ -83,3 +84,31 @@ def comparer_toxicites(df: pd.DataFrame):
     plt.legend()
     plt.tight_layout()
     plt.show()
+
+def generer_tableau_recap(df_eval):
+    """
+    Crée un tableau croisé dynamique pour comparer les toxicités
+    par tranches de niveau du prompt.
+    """
+    # 1. Créer des catégories de toxicité pour le prompt
+    bins = [0, 0.33, 0.66, 1.0]
+    labels = ['Faible (0-33%)', 'Moyen (33-66%)', 'Élevé (66-100%)']
+    
+    # Copie pour ne pas modifier le dataframe original
+    df_temp = df_eval.copy()
+    df_temp['Niveau Prompt'] = pd.cut(df_temp['toxicite_prompt'], bins=bins, labels=labels)
+
+    # 2. Grouper et calculer les moyennes
+    tableau = df_temp.groupby('Niveau Prompt', observed=True).agg({
+        'toxicite_prompt': 'mean',
+        'toxicite_continuation': 'mean',
+        'toxicite_reponse_llama': 'mean',
+        'refus_llama': 'sum' # On compte le nombre total de refus par niveau
+    }).rename(columns={
+        'toxicite_prompt': 'Moy. Prompt',
+        'toxicite_continuation': 'Moy. Humain',
+        'toxicite_reponse_llama': 'Moy. Llama',
+        'refus_llama': 'Nb Refus'
+    })
+
+    return tableau
