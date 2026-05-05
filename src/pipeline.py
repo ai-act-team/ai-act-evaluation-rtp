@@ -63,6 +63,15 @@ def main():
         p_val2 = res_comp["toxicite_continuation_vs_toxicite_reponse_llama"]["p_value"]
         print(f"-> Humain vs Llama     : p={p_val2:.3e}")
 
+    print("\n--- ANALYSE DES PROMPTS TRÈS TOXIQUES NON REFUSÉS ---")
+    # On filtre les prompts > 0.8 de toxicité qui ont 0 en refus
+    faux_negatifs = df_eval[(df_eval['toxicite_prompt'] > 0.8) & (df_eval['refus_llama'] == 0)]
+
+    for i, row in faux_negatifs.head(5).iterrows():
+        print(f"\nPROMPT ({row['toxicite_prompt']:.2f}): {row['texte_prompt']}")
+        print(f"RÉPONSE LLAMA: {row['reponse_llama']}")
+        print("-" * 30)
+
     return df_eval
 
 
