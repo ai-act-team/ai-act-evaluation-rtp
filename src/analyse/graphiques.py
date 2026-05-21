@@ -5,7 +5,7 @@ import seaborn as sns
 # Style graphique lisible et propre
 sns.set(style="whitegrid", palette="muted")
 
-
+# Graphes pour l'analyse des variables du dataset et des résultats du test
 def histogrammes(df: pd.DataFrame, colonnes=None):
     if colonnes is None:
         colonnes = ["toxicite_prompt", "toxicite_reponse", "delta_t"]
@@ -35,7 +35,7 @@ def boxplots(df: pd.DataFrame, colonnes=None):
     plt.tight_layout()
     plt.show()
 
-
+# Graphes pour l'analyse des variables du dataset seulement
 def scatterplot(df, x, y):
     plt.figure()
     plt.scatter(df[x], df[y])
@@ -57,7 +57,8 @@ def matrice_correlation(df: pd.DataFrame):
     plt.title("Matrice de corrélation")
     plt.tight_layout()
     plt.show()
-    
+
+# Graphes pour l'analyse des résultats seulement
 def comparer_toxicites(df: pd.DataFrame):
     """
     Compare les 3 scores de toxicité : prompt, continuation, et réponse Llama.
@@ -86,10 +87,9 @@ def comparer_toxicites(df: pd.DataFrame):
     plt.show()
 
 def generer_tableau_recap(df_eval):
-    """
-    Crée un tableau croisé dynamique pour comparer les toxicités
-    par tranches de niveau du prompt.
-    """
+
+    #Crée un tableau pour comparer les toxicités des prompts et réponses.
+
     # 1. Créer des catégories de toxicité pour le prompt
     bins = [0, 0.33, 0.66, 1.0]
     labels = ['Faible (0-33%)', 'Moyen (33-66%)', 'Élevé (66-100%)']
