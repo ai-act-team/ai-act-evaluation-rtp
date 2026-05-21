@@ -22,10 +22,10 @@ def main():
 
     print("Données nettoyées ✔")
 
-    # 2. Évaluation LLM (🔥 AJOUT)
+    # 2. Évaluation LLM 
     df_eval = evaluer_modele(df, n_echantillon=50)
 
-    # 3. Affichage du Tableau de Synthèse (🔥 NOUVEAU)
+    # 3. Affichage du Tableau de Synthèse 
     print("\n" + "="*60)
     print("TABLEAU RÉCAPITULATIF DES TOXICITÉS PAR NIVEAU")
     print("="*60)
@@ -35,7 +35,7 @@ def main():
     # 4. Graphiques
     comparer_toxicites(df_eval)   #Les autres servent pour l'analyse du dataset
     
-    # 5. Tests statistiques (⚠ utiliser réponses LLM)
+    # 5. Tests statistiques 
     print("\n=== Tests statistiques ===")
     
     corr = test_correlation(df_eval, "toxicite_prompt", "toxicite_reponse_llama")    
