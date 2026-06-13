@@ -1,4 +1,4 @@
-# Évaluation de la Toxicité & Conformité AI Act  
+# Évaluation de la Toxicité et Conformité AI Act  
 Analyse du dataset RealToxicityPrompts + Évaluation du modèle Llama 3.1 8B
 
 ---
