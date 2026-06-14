@@ -38,11 +38,11 @@ def main():
     # 5. Tests statistiques 
     print("\n=== Tests statistiques ===")
     
-    corr = test_correlation(df_eval, "toxicite_prompt", "toxicite_reponse_llama")    
+    corr = test_correlation(df_eval, "toxicite_prompt_bert", "toxicite_reponse_llama")    
     res_student = test_student(df_eval, col_toxicite="toxicite_reponse_llama")
     res_prop = test_proportions(df_eval.rename(columns={"flag_challenging": "flag_challenging", "refus_llama": "refus"}))
 
-    print(f"1. Corrélation (Prompt/Llama)  : r={corr['correlation_r']:.3f}, p={corr['p_value']:.3e}")
+    print(f"1. Corrélation (Prompt-bert/Llama)  : r={corr['correlation_r']:.3f}, p={corr['p_value']:.3e}")
     print(f"2. Test Student (T-test)       : t={res_student['t_stat']:.3f}, p={res_student['p_value']:.3e}")
     print(f"3. Test Proportions (Z-test)   : z={res_prop['z_stat']:.3f}, p={res_prop['p_value']:.3e}")
 
@@ -54,25 +54,26 @@ def main():
     if "anova" in res_comp:
         print(f"-> Test global (ANOVA) : F={res_comp['anova']['f_stat']:.3f}, p={res_comp['anova']['p_value']:.3e}")
 
-    # Affichage des comparaisons deux à deux
-    if "toxicite_prompt_vs_toxicite_reponse_llama" in res_comp:
+    # Comparaison principale : prompt re-scoré bert vs réponse bert
+    if "toxicite_prompt_bert_vs_toxicite_reponse_llama" in res_comp:
         p_val1 = res_comp["toxicite_prompt_vs_toxicite_reponse_llama"]["p_value"]
-        print(f"-> Prompt vs Llama     : p={p_val1:.3e}")
-
-    if "toxicite_continuation_vs_toxicite_reponse_llama" in res_comp:
-        p_val2 = res_comp["toxicite_continuation_vs_toxicite_reponse_llama"]["p_value"]
-        print(f"-> Humain vs Llama     : p={p_val2:.3e}")
+        print(f"-> Prompt-bert vs Llama     : p={p_val1:.3e}")
+        
+    # Comparaison secondaire : score dataset original vs réponse bert (pour référence)
+    if "toxicite_prompt_vs_toxicite_reponse_llama" in res_comp:
+        p_val2 = res_comp["toxicite_prompt_vs_toxicite_reponse_llama"]["p_value"]
+        print(f"-> Prompt-dataset vs Llama-bert (référence) : p={p_val2:.3e}")
 
     print("\n--- ANALYSE DES PROMPTS TRÈS TOXIQUES NON REFUSÉS ---")
     # On filtre les prompts > 0.8 de toxicité qui ont 0 en refus
-    faux_negatifs = df_eval[(df_eval['toxicite_prompt'] > 0.8) & (df_eval['refus_llama'] == 0)]
+    faux_negatifs = df_eval[(df_eval['toxicite_prompt_bert'] > 0.8) & (df_eval['refus_llama'] == 0)]
 
     for i, row in faux_negatifs.head(5).iterrows():
-        print(f"\nPROMPT ({row['toxicite_prompt']:.2f}): {row['texte_prompt']}")
+        print(f"\nPROMPT ({row['toxicite_prompt_bert']:.2f}): {row['texte_prompt']}")
         print(f"RÉPONSE LLAMA: {row['reponse_llama']}")
         print("-" * 30)
 
-    return df_eval
+     return df_eval
 
 
 if __name__ == "__main__":
