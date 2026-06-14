@@ -61,25 +61,30 @@ def matrice_correlation(df: pd.DataFrame):
 # Graphes pour l'analyse des résultats seulement
 def comparer_toxicites(df: pd.DataFrame):
     """
-    Compare les 3 scores de toxicité : prompt, continuation, et réponse Llama.
+    Compare les 2 scores de toxicité : prompt_bert et réponse Llama.
     """
-    colonnes = ["toxicite_prompt", "toxicite_continuation", "toxicite_reponse_llama"]
+    colonnes = ["toxicite_prompt_bert", "toxicite_reponse_llama"]
     cols_presentes = [c for c in colonnes if c in df.columns]
 
+    labels_affichage = {
+        "toxicite_prompt_bert": "Prompt (toxic-bert)",
+        "toxicite_reponse_llama": "Réponse Llama (toxic-bert)",
+    }
+    
     # Boxplot comparatif
     plt.figure(figsize=(8, 5))
-    df_melt = df[cols_presentes].melt(var_name="type", value_name="toxicite")
+    df_melt = df[cols_presentes].rename(columns=labels_affichage).melt(var_name="type", value_name="toxicite")
     sns.boxplot(x="type", y="toxicite", data=df_melt, palette="Set2")
-    plt.title("Comparaison des 3 scores de toxicité")
-    plt.xticks(rotation=15)
+    plt.title("Comparaison toxicité : Prompt vs Réponse Llama (toxic-bert)")
+    plt.xticks(rotation=10)
     plt.tight_layout()
     plt.show()
 
     # Histogrammes superposés
     plt.figure(figsize=(8, 5))
     for col in cols_presentes:
-        plt.hist(df[col], bins=30, alpha=0.5, label=col)
-    plt.title("Distribution des 3 scores de toxicité")
+        plt.hist(df[col], bins=30, alpha=0.5, label=labels_affichage.get(col, col))
+    plt.title("Distribution des scores de toxicité toxic-bert")
     plt.xlabel("Score de toxicité")
     plt.ylabel("Fréquence")
     plt.legend()
