@@ -34,8 +34,22 @@ def main():
 
     # 4. Graphiques
     comparer_toxicites(df_eval)   #Les autres servent pour l'analyse du dataset
+
+    # 5. Amplification de Toxicité (delta_t)
+    print("\n" + "="*60)
+    print("AMPLIFICATION DE TOXICITÉ (delta_t)")
+    print("="*60)
+    delta = df_eval["delta_t_llama"]
+    print(f"Moyenne      : {delta.mean():.3f}")
+    print(f"Médiane      : {delta.median():.3f}")
+    print(f"Écart-type   : {delta.std():.3f}")
+    print(f"% amplifie   (δ > 0) : {(delta > 0).mean() * 100:.1f}%")
+    print(f"% atténue    (δ < 0) : {(delta < 0).mean() * 100:.1f}%")
+    print(f"% maintient  (δ = 0) : {(delta == 0).mean() * 100:.1f}%")
+    print("="*60 + "\n")
+    visualiser_amplification_toxicite(df_eval)
     
-    # 5. Tests statistiques 
+    # 6. Tests statistiques 
     print("\n=== Tests statistiques ===")
     
     corr = test_correlation(df_eval, "toxicite_prompt_bert", "toxicite_reponse_llama")    
@@ -46,28 +60,29 @@ def main():
     print(f"2. Test Student (T-test)       : t={res_student['t_stat']:.3f}, p={res_student['p_value']:.3e}")
     print(f"3. Test Proportions (Z-test)   : z={res_prop['z_stat']:.3f}, p={res_prop['p_value']:.3e}")
 
-    # 6. Comparaison croisée des 3 toxicités (Prompt vs Humain vs Llama)
-    print("\n=== Comparaison Globale (ANOVA & T-tests) ===")
+    # 7. Comparaison croisée des 3 toxicités (Prompt vs Humain vs Llama)
+    print("\n=== Comparaison Globale (ANOVA & T-tests appariés) ===")
     res_comp = test_comparaison_toxicites(df_eval)
-
-    # Affichage de l'ANOVA (Test global sur les 3 colonnes en même temps)
+ 
     if "anova" in res_comp:
-        print(f"-> Test global (ANOVA) : F={res_comp['anova']['f_stat']:.3f}, p={res_comp['anova']['p_value']:.3e}")
-
-    # Comparaison principale : prompt re-scoré bert vs réponse bert
+        print(f"-> Test global (ANOVA): F={res_comp['anova']['f_stat']:.3f}, p={res_comp['anova']['p_value']:.3e}")
+ 
+    if "toxicite_prompt_bert_vs_toxicite_continuation_bert" in res_comp:
+        r = res_comp["toxicite_prompt_bert_vs_toxicite_continuation_bert"]
+        print(f"-> Prompt vs Continuation (humain): t={r['t_stat']:.3f}, p={r['p_value']:.3e}")
+ 
     if "toxicite_prompt_bert_vs_toxicite_reponse_llama" in res_comp:
-        p_val1 = res_comp["toxicite_prompt_vs_toxicite_reponse_llama"]["p_value"]
-        print(f"-> Prompt-bert vs Llama     : p={p_val1:.3e}")
-        
-    # Comparaison secondaire : score dataset original vs réponse bert (pour référence)
-    if "toxicite_prompt_vs_toxicite_reponse_llama" in res_comp:
-        p_val2 = res_comp["toxicite_prompt_vs_toxicite_reponse_llama"]["p_value"]
-        print(f"-> Prompt-dataset vs Llama-bert (référence) : p={p_val2:.3e}")
-
+        r = res_comp["toxicite_prompt_bert_vs_toxicite_reponse_llama"]
+        print(f"-> Prompt vs Réponse Llama: t={r['t_stat']:.3f}, p={r['p_value']:.3e}")
+ 
+    if "toxicite_continuation_bert_vs_toxicite_reponse_llama" in res_comp:
+        r = res_comp["toxicite_continuation_bert_vs_toxicite_reponse_llama"]
+        print(f"-> Continuation (humain) vs Réponse Llama: t={r['t_stat']:.3f}, p={r['p_value']:.3e}")
+ 
     print("\n--- ANALYSE DES PROMPTS TRÈS TOXIQUES NON REFUSÉS ---")
     # On filtre les prompts > 0.8 de toxicité qui ont 0 en refus
     faux_negatifs = df_eval[(df_eval['toxicite_prompt_bert'] > 0.8) & (df_eval['refus_llama'] == 0)]
-
+ 
     for i, row in faux_negatifs.head(5).iterrows():
         print(f"\nPROMPT ({row['toxicite_prompt_bert']:.2f}): {row['texte_prompt']}")
         print(f"RÉPONSE LLAMA: {row['reponse_llama']}")
