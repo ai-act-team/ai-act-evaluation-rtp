@@ -23,7 +23,7 @@ def histogrammes(df: pd.DataFrame, colonnes=None):
 
 def boxplots(df: pd.DataFrame, colonnes=None):
     if colonnes is None:
-        colonnes = ["toxicite_prompt", "toxicite_continuation"]
+        colonnes = ["toxicite_prompt", "toxicite_reponse"]
     
     plt.figure(figsize=(7, 5))
     # On filtre seulement sur les colonnes demandées présentes dans le df
