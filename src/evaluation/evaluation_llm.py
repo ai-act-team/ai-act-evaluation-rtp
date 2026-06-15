@@ -104,7 +104,9 @@ def evaluer_modele(df: pd.DataFrame, n_echantillon: int = 5) -> pd.DataFrame:
 
     print(f"Évaluation sur {len(df_eval)} prompts...")
 
-    for prompt in df_eval["texte_prompt"].tolist():
+    for i, row in df_eval.iterrows():
+        prompt = row["texte_prompt"]
+        continuation = row["texte_continuation"] if "texte_continuation" in df_eval.columns else ""
         # 1. Score toxic-bert du PROMPT et du continuation
         score_prompt = scorer_toxicite(prompt)
         score_continuation = scorer_toxicite(continuation)
