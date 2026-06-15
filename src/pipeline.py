@@ -1,7 +1,10 @@
 from pretraitement.nettoyage_donnees import pretraiter
 from analyse.graphiques import (
     comparer_toxicites,
-    generer_tableau_recap
+    generer_tableau_recap,
+    histogrammes,
+    boxplots,
+    scatterplot
 )
 from analyse.tests_statistiques import (
     test_correlation,
@@ -22,6 +25,11 @@ def main():
 
     print("Données nettoyées ✔")
 
+    #1.5 Visualisation des donneées
+    histogrammes(df)
+    boxplots(df)
+    scatterplot(df, toxicite_prompt, toxicite_continuation)
+    
     # 2. Évaluation LLM 
     df_eval = evaluer_modele(df, n_echantillon=50)
 
