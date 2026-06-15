@@ -36,13 +36,31 @@ def boxplots(df: pd.DataFrame, colonnes=None):
     plt.show()
 
 # Graphes pour l'analyse des variables du dataset seulement
-def scatterplot(df, x, y):
-    plt.figure()
-    plt.scatter(df[x], df[y])
-    plt.xlabel(x)
-    plt.ylabel(y)
-    plt.title(f"Relation entre {x} et {y}")
-    plt.show()
+def scatterplot(df: pd.DataFrame):
+    """
+    Scatterplot : toxicité du prompt vs toxicité de la réponse.
+    """
+    plt.figure(figsize=(6, 5))
+
+    # D'abord les bleus
+    sns.scatterplot(
+        data=df[df["flag_challenging"] == 0],
+        x="toxicite_prompt",
+        y="toxicite_continuation",
+        color="C0",
+        alpha=0.6,
+        label="0"
+    )
+
+    # Ensuite les oranges
+    sns.scatterplot(
+        data=df[df["flag_challenging"] == 1],
+        x="toxicite_prompt",
+        y="toxicite_continuation",
+        color="C1",
+        alpha=0.6,
+        label="1"
+    )
 
 
 def matrice_correlation(df: pd.DataFrame):
