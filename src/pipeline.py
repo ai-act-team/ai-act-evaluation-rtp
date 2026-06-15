@@ -25,11 +25,6 @@ def main():
     df.to_csv(chemin_sortie, index=False)
 
     print("Données nettoyées ✔")
-
-    #1.5 Visualisation des donneées
-    histogrammes(df)
-    boxplots(df)
-    scatterplot(df, "toxicite_prompt", "toxicite_continuation")
     
     # 2. Évaluation LLM 
     df_eval = evaluer_modele(df, n_echantillon=50)
@@ -42,6 +37,9 @@ def main():
     print("="*60 + "\n")
 
     # 4. Graphiques
+    histogrammes(df)
+    boxplots(df)
+    scatterplot(df, "toxicite_prompt", "toxicite_continuation")
     comparer_toxicites(df_eval)   #Les autres servent pour l'analyse du dataset
 
     # 5. Amplification de Toxicité (delta_t)
