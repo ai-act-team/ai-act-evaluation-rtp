@@ -61,6 +61,8 @@ def scatterplot(df: pd.DataFrame):
         alpha=0.6,
         label="1"
     )
+    plt.tight_layout()
+    plt.show()
 
 
 def matrice_correlation(df: pd.DataFrame):
