@@ -32,7 +32,7 @@ def scorer_toxicite(prompt: str) -> float:
     if not prompt or prompt.strip() == "":
         return 0.0
     result = evaluateur_toxicite(prompt, truncation=True, max_length=512)[0]
-    return result["score"] if result["label"] == "toxic" else 1 - result["score"]
+    return result["score"]
 
 
 def generer_reponse(prompt: str) -> str:
