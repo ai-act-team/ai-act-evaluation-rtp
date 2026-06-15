@@ -49,7 +49,7 @@ def matrice_correlation(df: pd.DataFrame):
     """
     Matrice de corrélation entre les variables numériques.
     """
-    colonnes = ["toxicite_prompt", "toxicite_reponse", "delta_t"]
+    colonnes = ["toxicite_prompt_bert", "toxicite_reponse_llama", "delta_t_llama"]
     corr = df[colonnes].corr()
 
     plt.figure(figsize=(6, 5))
