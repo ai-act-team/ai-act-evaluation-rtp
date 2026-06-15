@@ -28,7 +28,7 @@ def main():
     #1.5 Visualisation des donneées
     histogrammes(df)
     boxplots(df)
-    scatterplot(df, toxicite_prompt, toxicite_continuation)
+    scatterplot(df, "toxicite_prompt", "toxicite_continuation")
     
     # 2. Évaluation LLM 
     df_eval = evaluer_modele(df, n_echantillon=50)
