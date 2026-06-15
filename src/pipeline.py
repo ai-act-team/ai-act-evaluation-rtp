@@ -26,9 +26,50 @@ def main():
     df.to_csv(chemin_sortie, index=False)
 
     print("Données nettoyées ✔")
-    
+
+    #1.5 Visualisation dataset
+    histogrammes(df)
+    boxplots(df)
+    scatterplot(df, "toxicite_prompt", "toxicite_continuation")
+
     # 2. Évaluation LLM 
     df_eval = evaluer_modele(df, n_echantillon=50)
+
+    # 4. Amplification de Toxicité (delta_t)
+    print("\n" + "="*60)
+    print("AMPLIFICATION DE TOXICITÉ (delta_t)")
+    print("="*60)
+    delta = df_eval["delta_t_llama"]
+    print(f"Moyenne      : {delta.mean():.3f}")
+    print(f"Médiane      : {delta.median():.3f}")
+    print(f"Écart-type   : {delta.std():.3f}")
+    print(f"% amplifie   (δ > 0) : {(delta > 0).mean() * 100:.1f}%")
+    print(f"% atténue    (δ < 0) : {(delta < 0).mean() * 100:.1f}%")
+    print(f"% maintient  (δ = 0) : {(delta == 0).mean() * 100:.1f}%")
+    print("="*60 + "\n")
+    visualiser_amplification_toxicite(df_eval)
+
+    # 5. Affichage du Tableau de Synthèse 
+    print("\n" + "="*60)
+    print("TABLEAU RÉCAPITULATIF DES TOXICITÉS PAR NIVEAU")
+    print("="*60)
+    print(generer_tableau_recap(df_eval))
+    print("="*60 + "\n")
+
+    # 6. Graphiques
+    comparer_toxicites(df_eval)   #Les autres servent pour l'analyse du dataset
+    matrice_correlation(df_eval)
+    
+    # 7. Tests statistiques 
+    print("\n=== Tests statistiques ===")
+    
+    corr = test_correlation(df_eval, "toxicite_prompt_bert", "toxicite_reponse_llama")    
+    res_student = test_student(df_eval, col_toxicite="toxicite_reponse_llama")
+    res_prop = test_proportions(df_eval.rename(columns={"flag_challenging": "flag_challenging", "refus_llama": "refus"}))
+
+    print(f"1. Corrélation (Prompt-bert/Llama)  : r={corr['correlation_r']:.3f}, p={corr['p_value']:.3e}")
+    print(f"2. Test Student (T-test)       : t={res_student['t_stat']:.3f}, p={res_student['p_value']:.3e}")
+    print(f"3. Test Proportions (Z-test)   : z={res_prop['z_stat']:.3f}, p={res_prop['p_value']:.3e}")
 
     # 3. Comparaison croisée des 3 toxicités (Prompt vs Humain vs Llama)
     print("\n=== Comparaison Globale (ANOVA & T-tests appariés) ===")
@@ -57,45 +98,6 @@ def main():
         print(f"\nPROMPT ({row['toxicite_prompt_bert']:.2f}): {row['texte_prompt']}")
         print(f"RÉPONSE LLAMA: {row['reponse_llama']}")
         print("-" * 30)
-
-    # 4. Amplification de Toxicité (delta_t)
-    print("\n" + "="*60)
-    print("AMPLIFICATION DE TOXICITÉ (delta_t)")
-    print("="*60)
-    delta = df_eval["delta_t_llama"]
-    print(f"Moyenne      : {delta.mean():.3f}")
-    print(f"Médiane      : {delta.median():.3f}")
-    print(f"Écart-type   : {delta.std():.3f}")
-    print(f"% amplifie   (δ > 0) : {(delta > 0).mean() * 100:.1f}%")
-    print(f"% atténue    (δ < 0) : {(delta < 0).mean() * 100:.1f}%")
-    print(f"% maintient  (δ = 0) : {(delta == 0).mean() * 100:.1f}%")
-    print("="*60 + "\n")
-    visualiser_amplification_toxicite(df_eval)
-
-    # 5. Affichage du Tableau de Synthèse 
-    print("\n" + "="*60)
-    print("TABLEAU RÉCAPITULATIF DES TOXICITÉS PAR NIVEAU")
-    print("="*60)
-    print(generer_tableau_recap(df_eval))
-    print("="*60 + "\n")
-
-    # 6. Graphiques
-    histogrammes(df)
-    boxplots(df)
-    scatterplot(df, "toxicite_prompt", "toxicite_continuation")
-    comparer_toxicites(df_eval)   #Les autres servent pour l'analyse du dataset
-    matrice_correlation(df_eval)
-    
-    # 7. Tests statistiques 
-    print("\n=== Tests statistiques ===")
-    
-    corr = test_correlation(df_eval, "toxicite_prompt_bert", "toxicite_reponse_llama")    
-    res_student = test_student(df_eval, col_toxicite="toxicite_reponse_llama")
-    res_prop = test_proportions(df_eval.rename(columns={"flag_challenging": "flag_challenging", "refus_llama": "refus"}))
-
-    print(f"1. Corrélation (Prompt-bert/Llama)  : r={corr['correlation_r']:.3f}, p={corr['p_value']:.3e}")
-    print(f"2. Test Student (T-test)       : t={res_student['t_stat']:.3f}, p={res_student['p_value']:.3e}")
-    print(f"3. Test Proportions (Z-test)   : z={res_prop['z_stat']:.3f}, p={res_prop['p_value']:.3e}")
 
     return df_eval
 
