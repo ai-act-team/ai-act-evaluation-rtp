@@ -83,7 +83,7 @@ def main():
     histogrammes(df)
     boxplots(df)
     scatterplot(df, "toxicite_prompt", "toxicite_continuation")
-    comparer_toxicites(df_eval)   #Les autres servent pour l'analyse du datase
+    comparer_toxicites(df_eval)   #Les autres servent pour l'analyse du dataset
     matrice_correlation(df_eval)
     
     # 7. Tests statistiques 
