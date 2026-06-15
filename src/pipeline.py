@@ -29,20 +29,7 @@ def main():
     # 2. Évaluation LLM 
     df_eval = evaluer_modele(df, n_echantillon=50)
 
-    # 3. Affichage du Tableau de Synthèse 
-    print("\n" + "="*60)
-    print("TABLEAU RÉCAPITULATIF DES TOXICITÉS PAR NIVEAU")
-    print("="*60)
-    print(generer_tableau_recap(df_eval))
-    print("="*60 + "\n")
-
-    # 4. Graphiques
-    histogrammes(df)
-    boxplots(df)
-    scatterplot(df, "toxicite_prompt", "toxicite_continuation")
-    comparer_toxicites(df_eval)   #Les autres servent pour l'analyse du dataset
-
-    # 5. Amplification de Toxicité (delta_t)
+    # 3. Amplification de Toxicité (delta_t)
     print("\n" + "="*60)
     print("AMPLIFICATION DE TOXICITÉ (delta_t)")
     print("="*60)
@@ -55,6 +42,19 @@ def main():
     print(f"% maintient  (δ = 0) : {(delta == 0).mean() * 100:.1f}%")
     print("="*60 + "\n")
     visualiser_amplification_toxicite(df_eval)
+
+    # 4. Affichage du Tableau de Synthèse 
+    print("\n" + "="*60)
+    print("TABLEAU RÉCAPITULATIF DES TOXICITÉS PAR NIVEAU")
+    print("="*60)
+    print(generer_tableau_recap(df_eval))
+    print("="*60 + "\n")
+
+    # 5. Graphiques
+    histogrammes(df)
+    boxplots(df)
+    scatterplot(df, "toxicite_prompt", "toxicite_continuation")
+    comparer_toxicites(df_eval)   #Les autres servent pour l'analyse du datase
     
     # 6. Tests statistiques 
     print("\n=== Tests statistiques ===")
