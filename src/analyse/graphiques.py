@@ -61,6 +61,8 @@ def scatterplot(df: pd.DataFrame):
         alpha=0.6,
         label="1"
     )
+    plt.title("Toxicité prompt vs toxicité réponse")
+    plt.legend(title="flag_challenging")
     plt.tight_layout()
     plt.show()
 
