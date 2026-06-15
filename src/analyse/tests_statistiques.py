@@ -39,7 +39,7 @@ def test_proportions(df: pd.DataFrame):
     return {"z_stat": stat, "p_value": p_value}
 
 def test_comparaison_toxicites(df: pd.DataFrame):
-      """
+    """
     Compare les 3 scores de toxicité toxic-bert via ANOVA et tests de Student deux à deux :
     - toxicite_prompt_bert       : prompt scoré par toxic-bert
     - toxicite_continuation_bert : continuation humaine scorée par toxic-bert
