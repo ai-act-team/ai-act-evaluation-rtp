@@ -5,7 +5,8 @@ from analyse.graphiques import (
     histogrammes,
     boxplots,
     scatterplot,
-    visualiser_amplification_toxicite
+    visualiser_amplification_toxicite,
+    matrice_correlation
 )
 from analyse.tests_statistiques import (
     test_correlation,
@@ -83,6 +84,7 @@ def main():
     boxplots(df)
     scatterplot(df, "toxicite_prompt", "toxicite_continuation")
     comparer_toxicites(df_eval)   #Les autres servent pour l'analyse du datase
+    matrice_correlation(df_eval)
     
     # 7. Tests statistiques 
     print("\n=== Tests statistiques ===")
