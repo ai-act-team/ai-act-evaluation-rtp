@@ -39,31 +39,31 @@ def test_proportions(df: pd.DataFrame):
     return {"z_stat": stat, "p_value": p_value}
 
 def test_comparaison_toxicites(df: pd.DataFrame):
+      """
+    Compare les 3 scores de toxicité toxic-bert via ANOVA et tests de Student deux à deux :
+    - toxicite_prompt_bert       : prompt scoré par toxic-bert
+    - toxicite_continuation_bert : continuation humaine scorée par toxic-bert
+    - toxicite_reponse_llama     : réponse Llama scorée par toxic-bert
     """
-    Compare les scores de toxicité toxic-bert entre prompt et réponse Llama.
-    Comparaison principale : toxicite_prompt_bert vs toxicite_reponse_llama (même référentiel).
-    Comparaison secondaire optionnelle : toxicite_prompt (dataset) vs toxicite_reponse_llama.
-    """
-    colonnes_bert = ["toxicite_prompt_bert", "toxicite_reponse_llama"]
-    cols_bert_presentes = [c for c in colonnes_bert if c in df.columns]
-    df_clean = df[cols_bert_presentes].dropna()
-    
+    colonnes = ["toxicite_prompt_bert", "toxicite_continuation_bert", "toxicite_reponse_llama"]
+    cols_presentes = [c for c in colonnes if c in df.columns]
+    df_clean = df[cols_presentes].dropna()
+ 
     resultats = {}
-
-    # ANOVA ( si on a plusieurs colonnes)
-    if len(cols_bert_presentes) >= 2:
-        f_stat, p_anova = f_oneway(*[df_clean[c] for c in cols_bert_presentes])
+ 
+    # ANOVA globale sur les colonnes disponibles
+    if len(cols_presentes) >= 2:
+        f_stat, p_anova = f_oneway(*[df_clean[c] for c in cols_presentes])
         resultats["anova"] = {"f_stat": f_stat, "p_value": p_anova}
  
-    # Test principal : prompt-bert vs réponse-bert
-    if "toxicite_prompt_bert" in df_clean.columns and "toxicite_reponse_llama" in df_clean.columns:
-        t, p = ttest_rel(df_clean["toxicite_prompt_bert"], df_clean["toxicite_reponse_llama"])
-        resultats["toxicite_prompt_bert_vs_toxicite_reponse_llama"] = {"t_stat": t, "p_value": p}
- 
-    # Test secondaire (pour garder la traçabilité avec l'ancien score dataset)
-    if "toxicite_prompt" in df.columns and "toxicite_reponse_llama" in df.columns:
-        df_sec = df[["toxicite_prompt", "toxicite_reponse_llama"]].dropna()
-        t2, p2 = ttest_rel(df_sec["toxicite_prompt"], df_sec["toxicite_reponse_llama"])
-        resultats["toxicite_prompt_vs_toxicite_reponse_llama"] = {"t_stat": t2, "p_value": p2}
-
+    # Tests deux à deux
+    paires = [
+        ("toxicite_prompt_bert",       "toxicite_continuation_bert"),
+        ("toxicite_prompt_bert",       "toxicite_reponse_llama"),
+        ("toxicite_continuation_bert", "toxicite_reponse_llama"),
+    ]
+    for col1, col2 in paires:
+        if col1 in df_clean.columns and col2 in df_clean.columns:
+            t, p = ttest_rel(df_clean[col1], df_clean[col2])
+            resultats[f"{col1}_vs_{col2}"] = {"t_stat": t, "p_value": p}
     return resultats
