@@ -4,7 +4,8 @@ from analyse.graphiques import (
     generer_tableau_recap,
     histogrammes,
     boxplots,
-    scatterplot
+    scatterplot,
+    visualiser_amplification_toxicite
 )
 from analyse.tests_statistiques import (
     test_correlation,
