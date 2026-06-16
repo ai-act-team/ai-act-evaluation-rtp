@@ -34,7 +34,7 @@ def scorer_toxicite(prompt: str) -> float:
     if not prompt or prompt.strip() == "":
         return 0.0
     result = evaluateur_toxicite(prompt, truncation=True, max_length=512)[0]
-    scores = {r["label"]: r["score"] for r in results}
+    scores = {r["label"]: r["score"] for r in result}
     return scores["toxic"]
 
 
