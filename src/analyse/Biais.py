@@ -5,6 +5,65 @@ import seaborn as sns
 from scipy.stats import pearsonr, ttest_rel
  
 sns.set(style="whitegrid", palette="muted")
+  
+ 
+# ===============================
+# SCORING TOXIC-BERT SUR df
+# ===============================
+ 
+# Chargement unique du modèle (évite de le recharger à chaque appel)
+_evaluateur_toxicite = None
+ 
+def _get_evaluateur():
+    global _evaluateur_toxicite
+    if _evaluateur_toxicite is None:
+        _evaluateur_toxicite = hf_pipeline(
+            "text-classification",
+            model="unitary/toxic-bert"
+        )
+    return _evaluateur_toxicite
+ 
+ 
+def _scorer_texte(texte: str) -> float:
+    """Score toxic-bert pour un texte. Retourne 0.0 si vide."""
+    if not texte or str(texte).strip() == "":
+        return 0.0
+    result = _get_evaluateur()(str(texte), truncation=True, max_length=512)[0]
+    return float(result["score"])
+ 
+ 
+def scorer_dataset_bert(df: pd.DataFrame, n_echantillon: int = None) -> pd.DataFrame:
+    """
+    Calcule les scores toxic-bert sur les colonnes texte_prompt et texte_continuation
+    du dataset nettoyé df, et les ajoute comme nouvelles colonnes.
+ 
+    Paramètres
+    ----------
+    df           : DataFrame issu de pretraiter(), doit contenir texte_prompt
+                   et texte_continuation.
+    n_echantillon: si fourni, on travaille sur un sous-échantillon aléatoire
+                   pour limiter le temps de calcul (optionnel).
+ 
+    Retourne le DataFrame avec deux colonnes supplémentaires :
+    - toxicite_prompt_bert
+    - toxicite_continuation_bert
+    """
+    if n_echantillon and n_echantillon < len(df):
+        df = df.sample(n_echantillon, random_state=42).copy()
+    else:
+        df = df.copy()
+ 
+    print(f"  Scoring toxic-bert sur {len(df)} lignes (prompt + continuation)...")
+ 
+    df["toxicite_prompt_bert"] = df["texte_prompt"].apply(_scorer_texte)
+ 
+    if "texte_continuation" in df.columns:
+        df["toxicite_continuation_bert"] = df["texte_continuation"].apply(_scorer_texte)
+    else:
+        print("  [AVERTISSEMENT] Colonne texte_continuation absente, scoring continuation ignoré.")
+ 
+    print("  Scoring terminé ✔")
+    return df
  
  
 # ===============================
