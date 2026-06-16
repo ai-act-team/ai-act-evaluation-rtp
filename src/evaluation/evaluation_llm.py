@@ -20,7 +20,7 @@ llm = Llama(
 # Ce modèle va analyser les réponses de Llama pour leur donner une note
 evaluateur_toxicite = pipeline(
     "text-classification", 
-    model="unitary/toxic-bert"
+    model="unitary/toxic-bert",
     return_all_scores=True,
     function_to_apply="sigmoid"
 )
