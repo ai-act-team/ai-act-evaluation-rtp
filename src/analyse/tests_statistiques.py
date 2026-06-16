@@ -40,30 +40,32 @@ def test_proportions(df: pd.DataFrame):
 
 def test_comparaison_toxicites(df: pd.DataFrame):
     """
-    Compare les 3 scores de toxicité toxic-bert via ANOVA et tests de Student deux à deux :
-    - toxicite_prompt_bert       : prompt scoré par toxic-bert
-    - toxicite_continuation_bert : continuation humaine scorée par toxic-bert
-    - toxicite_reponse_llama     : réponse Llama scorée par toxic-bert
+    Compare les 3 scores de toxicité via ANOVA et tests de Student deux à deux.
     """
-    colonnes = ["toxicite_prompt_bert", "toxicite_continuation_bert", "toxicite_reponse_llama"]
+    colonnes = ["toxicite_prompt", "toxicite_continuation", "toxicite_reponse_llama"]
     cols_presentes = [c for c in colonnes if c in df.columns]
     df_clean = df[cols_presentes].dropna()
- 
+
     resultats = {}
- 
-    # ANOVA globale sur les colonnes disponibles
-    if len(cols_presentes) >= 2:
-        f_stat, p_anova = f_oneway(*[df_clean[c] for c in cols_presentes])
+
+    # ANOVA (si 3 colonnes présentes)
+    if len(cols_presentes) == 3:
+        f_stat, p_anova = f_oneway(
+            df_clean[cols_presentes[0]],
+            df_clean[cols_presentes[1]],
+            df_clean[cols_presentes[2]]
+        )
         resultats["anova"] = {"f_stat": f_stat, "p_value": p_anova}
- 
+
     # Tests deux à deux
     paires = [
-        ("toxicite_prompt_bert",       "toxicite_continuation_bert"),
-        ("toxicite_prompt_bert",       "toxicite_reponse_llama"),
-        ("toxicite_continuation_bert", "toxicite_reponse_llama"),
+        ("toxicite_prompt", "toxicite_continuation"),
+        ("toxicite_prompt", "toxicite_reponse_llama"),
+        ("toxicite_continuation", "toxicite_reponse_llama")
     ]
     for col1, col2 in paires:
         if col1 in df_clean.columns and col2 in df_clean.columns:
             t, p = ttest_rel(df_clean[col1], df_clean[col2])
             resultats[f"{col1}_vs_{col2}"] = {"t_stat": t, "p_value": p}
+
     return resultats
