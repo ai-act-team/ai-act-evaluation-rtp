@@ -75,7 +75,7 @@ def main():
     if "anova" in res_comp:
         print(f"-> Test global (ANOVA) : F={res_comp['anova']['f_stat']:.3f}, p={res_comp['anova']['p_value']:.3e}")
 
-    # Affichage des comparaisons deux à deux
+    # Affichage des comparaisons
     if "toxicite_prompt_vs_toxicite_reponse_llama" in res_comp:
         p_val1 = res_comp["toxicite_prompt_vs_toxicite_reponse_llama"]["p_value"]
         print(f"-> Prompt vs Llama     : p={p_val1:.3e}")
