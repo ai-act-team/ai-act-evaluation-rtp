@@ -72,7 +72,7 @@ def comparer_toxicites(df: pd.DataFrame):
     """
     Compare les 2 scores de toxicité : prompt_bert et réponse Llama.
     """
-    colonnes = ["toxicite_prompt_bert", "toxicite_continuation_bert", "toxicite_reponse_llama"]
+    colonnes = ["toxicite_prompt", "toxicite_continuation", "toxicite_reponse_llama"]
     cols_presentes = [c for c in colonnes if c in df.columns]
 
     labels_affichage = {
