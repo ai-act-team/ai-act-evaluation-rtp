@@ -7,13 +7,13 @@ from pretraitement.nettoyage_donnees import pretraiter
     #scatterplot,
     #visualiser_amplification_toxicite,
     #matrice_correlation
-)
+#)
 #from analyse.tests_statistiques import (
     #test_correlation,
     #test_student,
     #test_proportions,
     #test_comparaison_toxicites
-)
+#)
 #from evaluation.evaluation_llm import evaluer_modele
 from analyse.Biais import scorer_dataset_bert, calculer_biais, afficher_biais, visualiser_biais
 
