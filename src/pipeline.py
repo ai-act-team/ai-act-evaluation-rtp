@@ -1,21 +1,20 @@
 from pretraitement.nettoyage_donnees import pretraiter
-#from analyse.graphiques import (
-    #comparer_toxicites,
-    #generer_tableau_recap,
-    #histogrammes,
-    #boxplots,
-    #scatterplot,
-    #visualiser_amplification_toxicite,
-    #matrice_correlation
-#)
-#from analyse.tests_statistiques import (
-    #test_correlation,
-    #test_student,
-    #test_proportions,
-    #test_comparaison_toxicites
-#)
-#from evaluation.evaluation_llm import evaluer_modele
-from analyse.Biais import scorer_dataset_bert, calculer_biais, afficher_biais, visualiser_biais
+from analyse.graphiques import (
+    comparer_toxicites,
+    generer_tableau_recap,
+    histogrammes,
+    boxplots,
+    scatterplot,
+    visualiser_amplification_toxicite,
+    matrice_correlation
+)
+from analyse.tests_statistiques import (
+    test_correlation,
+    test_student,
+    test_proportions,
+    test_comparaison_toxicites
+)
+from evaluation.evaluation_llm import evaluer_modele
 
 def main():
     chemin_entree = r"C:\Users\USER\ai-act-evaluation-rtp\data\raw\prompts.jsonl"
@@ -26,31 +25,6 @@ def main():
     df.to_csv(chemin_sortie, index=False)
 
     print("Données nettoyées ✔")
-
-    # =========================================================
-    # 2. ANALYSE DE BIAIS — Comparabilité des méthodes de scoring
-    #    Compare les scores RTP originaux (Perspective API)
-    #    avec les scores toxic-bert recalculés sur df.
-    #    n_echantillon permet de limiter le temps de scoring.
-    # =========================================================
-    print("\n" + "=" * 65)
-    print("ÉTAPE 2 — COMPARABILITÉ DES MÉTHODES DE SCORING")
-    print("=" * 65)
- 
-    df_bert = scorer_dataset_bert(df)
-    resultats_biais = calculer_biais(df_bert)
-    afficher_biais(resultats_biais)
-    visualiser_biais(df_bert, resultats_biais)
- 
-    toutes_comparables = all(r["comparables"] for r in resultats_biais.values())
-    print(">>> DÉCISION GLOBALE :", end=" ")
-    if toutes_comparables:
-        print("Les deux méthodes sont suffisamment comparables. "
-              "Les scores peuvent être mis en regard dans l'analyse.")
-    else:
-        print("Les deux méthodes NE sont PAS suffisamment comparables. "
-              "Interpréter les comparaisons prompt/réponse avec précaution.")
-    print()
 
     #1.5 Visualisation dataset
     histogrammes(df)
