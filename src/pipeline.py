@@ -37,7 +37,7 @@ def main():
     print("ÉTAPE 2 — COMPARABILITÉ DES MÉTHODES DE SCORING")
     print("=" * 65)
  
-    df_bert = scorer_dataset_bert(df, n_echantillon=500)
+    df_bert = scorer_dataset_bert(df, n_echantillon=10000)
     resultats_biais = calculer_biais(df_bert)
     afficher_biais(resultats_biais)
     visualiser_biais(df_bert, resultats_biais)
