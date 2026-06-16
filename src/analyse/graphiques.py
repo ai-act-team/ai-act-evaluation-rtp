@@ -133,28 +133,22 @@ def generer_tableau_recap(df_eval):
     # 1. Créer des catégories de toxicité pour le prompt
     bins = [0, 0.33, 0.66, 1.0]
     labels = ['Faible (0-33%)', 'Moyen (33-66%)', 'Élevé (66-100%)']
-    
+
     # Copie pour ne pas modifier le dataframe original
     df_temp = df_eval.copy()
-    
-    # On catégorise sur toxicite_prompt_bert si disponible, sinon on replie sur toxicite_prompt
-    col_prompt = "toxicite_prompt_bert" if "toxicite_prompt_bert" in df_temp.columns else "toxicite_prompt"
-    df_temp['Niveau Prompt'] = pd.cut(df_temp[col_prompt], bins=bins, labels=labels)
- 
-    agg_dict  = {col_prompt: 'mean', 'refus_llama': 'sum'}
-    rename_dict = {col_prompt: 'Moy. Prompt (bert)', 'refus_llama': 'Nb Refus'}
- 
-    if 'toxicite_continuation_bert' in df_temp.columns:
-        agg_dict['toxicite_continuation_bert'] = 'mean'
-        rename_dict['toxicite_continuation_bert'] = 'Moy. Continuation (bert)'
- 
-    if 'toxicite_reponse_llama' in df_temp.columns:
-        agg_dict['toxicite_reponse_llama'] = 'mean'
-        rename_dict['toxicite_reponse_llama'] = 'Moy. Llama (bert)'
- 
-    if 'delta_t_llama' in df_temp.columns:
-        agg_dict['delta_t_llama'] = 'mean'
-        rename_dict['delta_t_llama'] = 'Moy. delta_t'
- 
-    tableau = df_temp.groupby('Niveau Prompt', observed=True).agg(agg_dict).rename(columns=rename_dict)
+    df_temp['Niveau Prompt'] = pd.cut(df_temp['toxicite_prompt'], bins=bins, labels=labels)
+
+    # 2. Grouper et calculer les moyennes
+    tableau = df_temp.groupby('Niveau Prompt', observed=True).agg({
+        'toxicite_prompt': 'mean',
+        'toxicite_continuation': 'mean',
+        'toxicite_reponse_llama': 'mean',
+        'refus_llama': 'sum' # On compte le nombre total de refus par niveau
+    }).rename(columns={
+        'toxicite_prompt': 'Moy. Prompt',
+        'toxicite_continuation': 'Moy. Humain',
+        'toxicite_reponse_llama': 'Moy. Llama',
+        'refus_llama': 'Nb Refus'
+    })
+
     return tableau
