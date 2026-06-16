@@ -15,7 +15,7 @@ from analyse.tests_statistiques import (
     test_comparaison_toxicites
 )
 from evaluation.evaluation_llm import evaluer_modele
-
+from analyse.Biais import calculer_biais, afficher_biais, visualiser_biais
 
 def main():
     chemin_entree = r"C:\Users\USER\ai-act-evaluation-rtp\data\raw\prompts.jsonl"
