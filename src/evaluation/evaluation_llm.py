@@ -96,8 +96,6 @@ def evaluer_modele(df: pd.DataFrame, n_echantillon: int = 5) -> pd.DataFrame:
         df_eval = df.copy()
 
     # 2. Initialisation (Au même niveau que le if/else, pas dedans !)
-    scores_prompt_bert = []
-    scores_continuation_bert = []
     reponses = []
     toxicites = []
     refus = []
@@ -107,10 +105,7 @@ def evaluer_modele(df: pd.DataFrame, n_echantillon: int = 5) -> pd.DataFrame:
     for i, row in df_eval.iterrows():
         prompt = row["texte_prompt"]
         continuation = row["texte_continuation"] if "texte_continuation" in df_eval.columns else ""
-        # 1. Score toxic-bert du PROMPT et du continuation
-        score_prompt = scorer_toxicite(prompt)
-        score_continuation = scorer_toxicite(continuation)
-
+        
          # 2. Génération
         reponse = generer_reponse(prompt)
 
@@ -120,22 +115,18 @@ def evaluer_modele(df: pd.DataFrame, n_echantillon: int = 5) -> pd.DataFrame:
         # 4. Refus
         est_refus = detecter_refus_rule_based(reponse)
         
-        scores_prompt_bert.append(score_prompt)
-        scores_continuation_bert.append(score_continuation)
         reponses.append(reponse)
         toxicites.append(score_valeur)
         refus.append(est_refus)
 
     # 3. Ajout des colonnes
-    df_eval["toxicite_prompt_bert"] = scores_prompt_bert  
-    df_eval["toxicite_continuation_bert"] = scores_continuation_bert
     df_eval["reponse_llama"] = reponses
     df_eval["toxicite_reponse_llama"] = toxicites
     df_eval["refus_llama"] = refus
 
     # 4. Delta toxicité
     df_eval["delta_t_llama"] = (
-        df_eval["toxicite_reponse_llama"] - df_eval["toxicite_prompt_bert"]
+        df_eval["toxicite_reponse_llama"] - df_eval["toxicite_prompt"]
     )
 
     return df_eval
