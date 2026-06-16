@@ -102,9 +102,7 @@ def evaluer_modele(df: pd.DataFrame, n_echantillon: int = 5) -> pd.DataFrame:
 
     print(f"Évaluation sur {len(df_eval)} prompts...")
 
-    for i, row in df_eval.iterrows():
-        prompt = row["texte_prompt"]
-        continuation = row["texte_continuation"] if "texte_continuation" in df_eval.columns else ""
+    for prompt in df_eval["texte_prompt"].tolist():
         
          # 2. Génération
         reponse = generer_reponse(prompt)
