@@ -21,6 +21,8 @@ llm = Llama(
 evaluateur_toxicite = pipeline(
     "text-classification", 
     model="unitary/toxic-bert"
+    return_all_scores=True,
+    function_to_apply="sigmoid"
 )
 
 def scorer_toxicite(prompt: str) -> float:
@@ -32,7 +34,8 @@ def scorer_toxicite(prompt: str) -> float:
     if not prompt or prompt.strip() == "":
         return 0.0
     result = evaluateur_toxicite(prompt, truncation=True, max_length=512)[0]
-    return result["score"]
+    scores = {r["label"]: r["score"] for r in results}
+    return scores["toxic"]
 
 
 def generer_reponse(prompt: str) -> str:
