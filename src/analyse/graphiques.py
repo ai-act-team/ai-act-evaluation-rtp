@@ -61,24 +61,11 @@ def scatterplot(df: pd.DataFrame):
         alpha=0.6,
         label="1"
     )
-    plt.title("Toxicité prompt vs toxicité réponse")
+    plt.title("Toxicité prompt vs toxicité continuation")
     plt.legend(title="flag_challenging")
     plt.tight_layout()
     plt.show()
 
-
-def matrice_correlation(df: pd.DataFrame):
-    """
-    Matrice de corrélation entre les variables numériques.
-    """
-    colonnes = ["toxicite_prompt_bert", "toxicite_reponse_llama", "delta_t_llama"]
-    corr = df[colonnes].corr()
-
-    plt.figure(figsize=(6, 5))
-    sns.heatmap(corr, annot=True, cmap="coolwarm", vmin=-1, vmax=1)
-    plt.title("Matrice de corrélation")
-    plt.tight_layout()
-    plt.show()
 
 # Graphes pour l'analyse des résultats seulement
 def comparer_toxicites(df: pd.DataFrame):
@@ -89,16 +76,16 @@ def comparer_toxicites(df: pd.DataFrame):
     cols_presentes = [c for c in colonnes if c in df.columns]
 
     labels_affichage = {
-        "toxicite_prompt_bert":       "Prompt (toxic-bert)",
-        "toxicite_continuation_bert": "Continuation humaine (toxic-bert)",
-        "toxicite_reponse_llama":     "Réponse Llama (toxic-bert)",
+        "toxicite_prompt":       "Prompt",
+        "toxicite_continuation": "Continuation humaine",
+        "toxicite_reponse_llama":     "Réponse Llama",
     }
     
     # Boxplot comparatif
     plt.figure(figsize=(8, 5))
     df_melt = df[cols_presentes].rename(columns=labels_affichage).melt(var_name="type", value_name="toxicite")
     sns.boxplot(x="type", y="toxicite", data=df_melt, palette="Set2")
-    plt.title("Comparaison des 3 scores de toxicité (toxic-bert)")
+    plt.title("Comparaison des 3 scores de toxicité")
     plt.xticks(rotation=10)
     plt.tight_layout()
     plt.show()
@@ -107,7 +94,7 @@ def comparer_toxicites(df: pd.DataFrame):
     plt.figure(figsize=(8, 5))
     for col in cols_presentes:
         plt.hist(df[col], bins=30, alpha=0.5, label=labels_affichage.get(col, col))
-    plt.title("Distribution des 3 scores de toxicité (toxic-bert)")
+    plt.title("Distribution des 3 scores de toxicité")
     plt.xlabel("Score de toxicité")
     plt.ylabel("Fréquence")
     plt.legend()
@@ -132,7 +119,7 @@ def visualiser_amplification_toxicite(df: pd.DataFrame):
     plt.axvline(0, color="red", linestyle="--", linewidth=1.5, label="δ = 0 (pas d'amplification)")
     plt.axvline(delta.mean(), color="orange", linestyle="-", linewidth=1.5, label=f"Moyenne = {delta.mean():.3f}")
     plt.title("Distribution du score d'amplification de toxicité (delta_t)")
-    plt.xlabel("delta_t  (toxicité réponse − toxicité prompt, toxic-bert)")
+    plt.xlabel("delta_t  (toxicité réponse − toxicité prompt)")
     plt.ylabel("Fréquence")
     plt.legend()
     plt.tight_layout()
