@@ -39,9 +39,6 @@ def test_proportions(df: pd.DataFrame):
     return {"z_stat": stat, "p_value": p_value}
 
 def test_comparaison_toxicites(df: pd.DataFrame):
-    """
-    Compare les 3 scores de toxicité via ANOVA et tests de Student deux à deux.
-    """
     colonnes = ["toxicite_prompt", "toxicite_continuation", "toxicite_reponse_llama"]
     cols_presentes = [c for c in colonnes if c in df.columns]
     df_clean = df[cols_presentes].dropna()
