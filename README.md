@@ -21,13 +21,14 @@ Projet réalisé par une équipe de **4 étudiants** de la Licence SID — Unive
 - Nettoyage et normalisation des données  
 - Étude de la toxicité des prompts et réponses  
 - Analyse des prompts *challenging*  
-- Tests statistiques : corrélation, Student, proportions  
+- Tests statistiques : corrélation, Student, proportions, comparaison de toxicités
 
 ### 2) Évaluation du modèle LLM (Llama 3.1 8B)
 Pour chaque prompt :
 - génération d’une réponse  
 - calcul d’un score de toxicité  
-- détection d’un refus approprié  
+- détection d’un refus approprié
+- calcul de l'amplification de toxicité
 - analyse de la sécurité et des alternatives proposées  
 - comparaison toxicité prompt → réponse  
 
