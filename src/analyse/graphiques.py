@@ -37,9 +37,6 @@ def boxplots(df: pd.DataFrame, colonnes=None):
 
 # Graphes pour l'analyse des variables du dataset seulement
 def scatterplot(df: pd.DataFrame):
-    """
-    Scatterplot : toxicité du prompt vs toxicité de la réponse.
-    """
     plt.figure(figsize=(6, 5))
 
     # D'abord les bleus
@@ -102,11 +99,6 @@ def comparer_toxicites(df: pd.DataFrame):
     plt.show()
 
 def visualiser_amplification_toxicite(df: pd.DataFrame):
-    """
-    Visualise le score delta_t_llama (amplification de toxicité) :
-    - Distribution du delta_t (histogramme centré sur 0)
-    - Boxplot du delta_t par type de prompt (challenging vs normal)
-    """
     if "delta_t_llama" not in df.columns:
         print("Colonne delta_t_llama absente, visualisation impossible.")
         return
